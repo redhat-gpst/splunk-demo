@@ -1,0 +1,10 @@
+- name: restore original sudoers file
+  hosts: rhel
+  gather_facts: false
+
+  tasks:
+  
+    - name: copy original sudoers to rhel vms
+      copy: 
+        src: ./sudoers
+        dest: /etc/sudoers
