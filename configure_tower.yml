@@ -6,7 +6,7 @@
 
   tasks:
 
-    - name: create nios inventory in tower
+    - name: create inventory in tower
       awx.awx.tower_inventory:
         name: "rhel_vms"
         description: "RHEL VM"
@@ -42,9 +42,22 @@
         tower_host: tower
         validate_certs: false
 
+    - name: Add machine credential
+      credential:
+        name: "rhel creds"
+        description: rhel login credentials
+        organization: Default
+        credential_type: Machine
+        state: present
+        tower_username: admin
+        tower_password: ansible123!
+        tower_host: tower
+        validate_certs: false
+
+
     - name: Add Splunk project
-      tower_project:
-        awx.awx.name: "splunk demo"
+      awx.awx.tower_project:
+        name: "splunk demo"git
         description: "Splunk demo files"
         organization: "Default"
         scm_type: git
@@ -54,4 +67,23 @@
         tower_password: ansible123!
         tower_host: tower
         validate_certs: false
+
+    - name: Create vm remediation Job
+      awx.awx.tower_job_template:
+        name: "Make sure sudoers is correct"
+        job_type: "run"
+        organization: "Default"
+        inventory: "rhel_vms"
+        project: "Splunk demo files"
+        playbook: "sudoers.yml"
+        credentials:
+          - "rhel creds"
+        state: "present"
+        tower_username: admin
+        tower_password: ansible123!
+        tower_host: tower
+        validate_certs: false
+          
+
+  
   
