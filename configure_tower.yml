@@ -22,7 +22,7 @@
       awx.awx.tower_host:
         name: "rhelvm1"
         description: "RHEL VM"
-        inventory: "rehl_vms"
+        inventory: "rhel_vms"
         state: present
         tower_username: admin
         tower_password: ansible123!
@@ -40,6 +40,7 @@
         tower_username: admin
         tower_password: ansible123!
         tower_host: tower
+        validate_certs: false
 
     - name: Add Splunk project
       tower_project:
@@ -52,4 +53,5 @@
         tower_username: admin
         tower_password: ansible123!
         tower_host: tower
+        validate_certs: false
   
