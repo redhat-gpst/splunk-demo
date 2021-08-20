@@ -44,7 +44,7 @@
 
     - name: Add Splunk project
       tower_project:
-        name: "splunk demo"
+        awx.awx.name: "splunk demo"
         description: "Splunk demo files"
         organization: "Default"
         scm_type: git
