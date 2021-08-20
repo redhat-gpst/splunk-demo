@@ -1,0 +1,55 @@
+- name: install and configure splunk forwarder
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+
+  tasks:
+
+    - name: create nios inventory in tower
+      awx.awx.tower_inventory:
+        name: "rhel_vms"
+        description: "RHEL VM"
+        organization: "Default"
+        state: present
+        tower_username: admin
+        tower_password: ansible123!
+        tower_host: tower
+        validate_certs: false
+      
+      
+    - name: create host in inventory
+      awx.awx.tower_host:
+        name: "rhelvm1"
+        description: "RHEL VM"
+        inventory: "rehl_vms"
+        state: present
+        tower_username: admin
+        tower_password: ansible123!
+        tower_host: tower
+        validate_certs: false
+      
+    - name: create rhel inventory group in tower
+      awx.awx.tower_group:
+        name: "rhel"
+        description: "RHEL VMs"
+        hosts:
+          - rhelvm1
+        inventory: "rhel_vms"
+        state: present
+        tower_username: admin
+        tower_password: ansible123!
+        tower_host: tower
+
+    - name: Add Splunk project
+      tower_project:
+        name: "splunk demo"
+        description: "Splunk demo files"
+        organization: "Default"
+        scm_type: git
+        scm_url: https://github.com/gejames/splunk-demo
+        state: present
+        tower_username: admin
+        tower_password: ansible123!
+        tower_host: tower
+  
