@@ -1,6 +1,7 @@
 - name: restore original sudoers file
   hosts: rhel
   gather_facts: false
+  become: yes
 
   tasks:
   

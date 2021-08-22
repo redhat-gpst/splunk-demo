@@ -2,6 +2,7 @@
   hosts: localhost
   connection: local
   gather_facts: false
+  
 
 
   tasks:
@@ -48,6 +49,9 @@
         description: "rhel login credentials"
         organization: Default
         credential_type: Machine
+        inputs:
+          username: rhel
+          password: ansible123!
         state: present
         tower_username: admin
         tower_password: ansible123!
