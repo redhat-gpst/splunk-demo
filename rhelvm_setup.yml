@@ -1,0 +1,31 @@
+- name: install and configure splunk forwarder
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  tasks:
+    
+    - name download splunk forwarder rpm
+      get_url:
+        src: https://d7wz6hmoaavd0.cloudfront.net/products/universalforwarder/releases/8.2.1/linux/splunkforwarder-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm
+        dest: /tmp/splunkforwarder-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm
+
+    - name: install programs
+      dnf:
+        name:
+          - nano
+          - nmap
+          - vim
+          - wget
+        state: present
+
+    - name: isntall splunk forwarder
+       dnf:
+         name: /tmp/splunkforwarder-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm
+         state: present
+    
+    - name: update sudoers to allow passwordless sudo
+      lineinfile:
+        path: /etc/sudoers
+        regexp: '^/# %wheel'
+        line: %wheel
