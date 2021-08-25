@@ -1,0 +1,1 @@
+curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible123! https://tower/api/v2/job_templates/25/launch/

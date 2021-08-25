@@ -1,14 +1,3 @@
-- name: install and configure splunk forwarder
-  hosts: localhost
-  connection: local
-  gather_facts: false
-  
-  
-
-
-  tasks:
-
-    
     - name: remove demo job template
       awx.awx.tower_job_template:
         name: "Demo Job Template"

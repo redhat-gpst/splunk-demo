@@ -18,12 +18,6 @@ USERNAME = admin
 PASSWORD = splunk123!
 EOT
 
-sudo cat <<EOT >> /opt/splunk/bin/scripts/start_tower_job.sh
-curl -f -k -H 'Content-Type: application/json' -XPOST \
---user admin:ansible123! \
-https://tower/api/v2/job_templates/25/launch/
-EOT
-
 ## create symlink to splunk binary
 sudo ln -s /opt/splunkforwarder/bin/splunk /usr/bin/splunk
 

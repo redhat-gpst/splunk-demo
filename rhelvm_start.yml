@@ -1,0 +1,74 @@
+- name: configure demo
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: yes
+
+  tasks:
+  
+    - name: enable audit of /etc/sudoers
+      commmand: auditctl -w /etc/sudoers -p wa -k sudoers
+
+    - name: install some programs
+      dnf:
+        name:
+          - nano
+          - nmap
+          - vim
+          - wget
+        state: present
+
+    - name: download splunk forwarder rpm
+      get_url:
+        url: https://d7wz6hmoaavd0.cloudfront.net/products/universalforwarder/releases/8.2.1/linux/splunkforwarder-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm
+        dest: /tmp/splunkforwarder-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm
+
+    - name: install splunk forwarder
+      dnf:
+        name: /tmp/splunkforwarder-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm
+        state: present
+
+    - name: create symlink to splunk binary
+      ansible.builtin.file:
+        src: /opt/splunkforwarder/bin/splunk
+        dest: /usr/bin/splunk
+        state: link
+
+    - name: copy user-seed.conf
+      copy:
+        src: files/user-seed.conf
+        dest: /opt/splunkforwarder/etc/system/local/
+      
+    - name: configure splunk forwarder - accept license and set user/password
+      command: /opt/splunkforwarder/bin/splunk restart --accept-license --answer-yes --no-prompt
+
+    - name: configure splunk forwarder - add forward server
+      command: /opt/splunkforwarder/bin/splunk add forward-server splunk:9997 -auth admin:splunk123!
+
+    - name: configure splunk forwarder - monitor /var/log/messages
+      command: /opt/splunkforwarder/bin/splunk add monitor /var/log/messages
+
+    - name: configure splunk forwarder - monitor audit.log
+      command: opt/splunkforwarder/bin/splunk add monitor /var/log/audit/audit.log
+
+    - name: install splunk.ex ansible collection
+      command: ansible-galaxy collection install splunk.es
+
+    - name: install awx.awx. ansible collection
+      command: ansible-galaxy collection install awx.awx
+
+    - name: import configure controller playook
+      import_playbook: configure_controller.yml
+
+- name: configure splunk container for demp
+  hosts: splunk
+  gather_facts: false
+  become: yes
+
+  tasks:
+     
+    - name: copy start_controller_job.sh
+      copy:
+        src: files/start_controller_job.sh
+        dest: /opt/splunk/bin/scripts/
+
