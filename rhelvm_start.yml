@@ -1,3 +1,4 @@
+---
 - name: configure demo
   hosts: localhost
   connection: local
@@ -8,10 +9,7 @@
      - awx.awx
 
   tasks:
-  
-    - name: enable audit of /etc/sudoers
-      commmand: auditctl -w /etc/sudoers -p wa -k sudoers
-
+      
     - name: install some programs
       dnf:
         name:
@@ -53,6 +51,9 @@
 
     - name: configure splunk forwarder - monitor audit.log
       command: opt/splunkforwarder/bin/splunk add monitor /var/log/audit/audit.log
+
+    - name: enable audit of /etc/sudoers
+      commmand: auditctl -w /etc/sudoers -p wa -k sudoers
 
     - name: import configure controller playook
       import_playbook: configure_controller.yml
