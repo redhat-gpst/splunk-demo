@@ -7,6 +7,43 @@
 
   tasks:
 
+    
+    - name: remove demo job template
+      awx.awx.tower_job_template:
+        name: "Demo Job Template"
+        state: "absent"
+        tower_username: admin
+        tower_password: ansible123!
+        tower_host: tower
+        validate_certs: false
+    
+    - name: remove demo project
+      awx.awx.tower_project:
+        name: "Demo Project"
+        state: absent
+        tower_username: admin
+        tower_password: ansible123!
+        tower_host: tower
+        validate_certs: false
+
+    - name: remove demo credential
+      awx.awx.tower_credential:
+        name: "Demo Credential"
+        state: absent
+        tower_username: admin
+        tower_password: ansible123!
+        tower_host: tower
+        validate_certs: false
+    
+    - name: remove demo inventory
+      awx.awx.tower_project:
+        name: "Demo Inventory"
+        state: absent
+        tower_username: admin
+        tower_password: ansible123!
+        tower_host: tower
+        validate_certs: false
+
     - name: create inventory in tower
       awx.awx.tower_inventory:
         name: "rhel_vms"
