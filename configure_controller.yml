@@ -1,121 +1,122 @@
-    - name: remove demo job template
-      awx.awx.tower_job_template:
-        name: "Demo Job Template"
-        state: "absent"
-        tower_username: admin
-        tower_password: ansible123!
-        tower_host: tower
-        validate_certs: false
-    
-    - name: remove demo project
-      awx.awx.tower_project:
-        name: "Demo Project"
-        state: absent
-        tower_username: admin
-        tower_password: ansible123!
-        tower_host: tower
-        validate_certs: false
+---
+- name: remove demo job template
+  awx.awx.tower_job_template:
+    name: "Demo Job Template"
+    state: "absent"
+    tower_username: admin
+    tower_password: ansible123!
+    tower_host: tower
+    validate_certs: false
 
-    - name: remove demo credential
-      awx.awx.tower_credential:
-        name: "Demo Credential"
-        credential_type: Machine
-        state: absent
-        tower_username: admin
-        tower_password: ansible123!
-        tower_host: tower
-        validate_certs: false
-    
-    - name: remove demo inventory
-      awx.awx.tower_inventory:
-        name: "Demo Inventory"
-        organization: "Default"
-        state: absent
-        tower_username: admin
-        tower_password: ansible123!
-        tower_host: tower
-        validate_certs: false
+- name: remove demo project
+  awx.awx.tower_project:
+    name: "Demo Project"
+    state: absent
+    tower_username: admin
+    tower_password: ansible123!
+    tower_host: tower
+    validate_certs: false
 
-    - name: create inventory in tower
-      awx.awx.tower_inventory:
-        name: "rhel_vms"
-        description: "RHEL VM"
-        organization: "Default"
-        state: present
-        tower_username: admin
-        tower_password: ansible123!
-        tower_host: tower
-        validate_certs: false
-      
-      
-    - name: create host in inventory
-      awx.awx.tower_host:
-        name: "rhelvm1"
-        description: "RHEL VM"
-        inventory: "rhel_vms"
-        state: present
-        tower_username: admin
-        tower_password: ansible123!
-        tower_host: tower
-        validate_certs: false
-      
-    - name: create rhel inventory group in tower
-      awx.awx.tower_group:
-        name: "rhel"
-        description: "RHEL VMs"
-        hosts:
-          - rhelvm1
-        inventory: "rhel_vms"
-        state: present
-        tower_username: admin
-        tower_password: ansible123!
-        tower_host: tower
-        validate_certs: false
+- name: remove demo credential
+  awx.awx.tower_credential:
+    name: "Demo Credential"
+    credential_type: Machine
+    state: absent
+    tower_username: admin
+    tower_password: ansible123!
+    tower_host: tower
+    validate_certs: false
 
-    - name: Add machine credential
-      awx.awx.tower_credential:
-        name: "rhel creds"
-        description: "rhel login credentials"
-        organization: Default
-        credential_type: Machine
-        inputs:
-          username: rhel
-          password: ansible123!
-        state: present
-        tower_username: admin
-        tower_password: ansible123!
-        tower_host: tower
-        validate_certs: false
+- name: remove demo inventory
+  awx.awx.tower_inventory:
+    name: "Demo Inventory"
+    organization: "Default"
+    state: absent
+    tower_username: admin
+    tower_password: ansible123!
+    tower_host: tower
+    validate_certs: false
+
+- name: create inventory in tower
+  awx.awx.tower_inventory:
+    name: "rhel_vms"
+    description: "RHEL VM"
+    organization: "Default"
+    state: present
+    tower_username: admin
+    tower_password: ansible123!
+    tower_host: tower
+    validate_certs: false
+  
+  
+- name: create host in inventory
+  awx.awx.tower_host:
+    name: "rhelvm1"
+    description: "RHEL VM"
+    inventory: "rhel_vms"
+    state: present
+    tower_username: admin
+    tower_password: ansible123!
+    tower_host: tower
+    validate_certs: false
+  
+- name: create rhel inventory group in tower
+  awx.awx.tower_group:
+    name: "rhel"
+    description: "RHEL VMs"
+    hosts:
+      - rhelvm1
+    inventory: "rhel_vms"
+    state: present
+    tower_username: admin
+    tower_password: ansible123!
+    tower_host: tower
+    validate_certs: false
+
+- name: Add machine credential
+  awx.awx.tower_credential:
+    name: "rhel creds"
+    description: "rhel login credentials"
+    organization: Default
+    credential_type: Machine
+    inputs:
+      username: rhel
+      password: ansible123!
+    state: present
+    tower_username: admin
+    tower_password: ansible123!
+    tower_host: tower
+    validate_certs: false
 
 
-    - name: Add Splunk project
-      awx.awx.tower_project:
-        name: "splunk demo"
-        description: "Splunk demo files"
-        organization: "Default"
-        scm_type: git
-        scm_url: https://github.com/gejames/splunk-demo
-        state: present
-        tower_username: admin
-        tower_password: ansible123!
-        tower_host: tower
-        validate_certs: false
+- name: Add Splunk project
+  awx.awx.tower_project:
+    name: "splunk demo"
+    description: "Splunk demo files"
+    organization: "Default"
+    scm_type: git
+    scm_url: https://github.com/gejames/splunk-demo
+    state: present
+    tower_username: admin
+    tower_password: ansible123!
+    tower_host: tower
+    validate_certs: false
 
-    - name: Create vm remediation Job
-      awx.awx.tower_job_template:
-        name: "verify sudoers"
-        job_type: "run"
-        organization: "Default"
-        inventory: "rhel_vms"
-        project: "splunk demo"
-        playbook: "sudoers.yml"
-        credentials:
-          - "rhel creds"
-        state: "present"
-        tower_username: admin
-        tower_password: ansible123!
-        tower_host: tower
-        validate_certs: false
+- name: Create vm remediation Job
+  awx.awx.tower_job_template:
+    name: "verify sudoers"
+    job_type: "run"
+    organization: "Default"
+    inventory: "rhel_vms"
+    project: "splunk demo"
+    playbook: "sudoers.yml"
+    credentials:
+      - "rhel creds"
+    state: "present"
+    tower_username: admin
+    tower_password: ansible123!
+    tower_host: tower
+    validate_certs: false
           
 
   

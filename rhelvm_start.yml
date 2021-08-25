@@ -4,6 +4,9 @@
   gather_facts: false
   become: yes
 
+  collections:
+     - awx.awx
+
   tasks:
   
     - name: enable audit of /etc/sudoers
@@ -50,12 +53,6 @@
 
     - name: configure splunk forwarder - monitor audit.log
       command: opt/splunkforwarder/bin/splunk add monitor /var/log/audit/audit.log
-
-    - name: install splunk.ex ansible collection
-      command: ansible-galaxy collection install splunk.es
-
-    - name: install awx.awx. ansible collection
-      command: ansible-galaxy collection install awx.awx
 
     - name: import configure controller playook
       import_playbook: configure_controller.yml
