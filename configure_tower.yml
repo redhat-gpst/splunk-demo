@@ -29,6 +29,7 @@
     - name: remove demo credential
       awx.awx.tower_credential:
         name: "Demo Credential"
+        type: ssh
         state: absent
         tower_username: admin
         tower_password: ansible123!
@@ -36,8 +37,9 @@
         validate_certs: false
     
     - name: remove demo inventory
-      awx.awx.tower_project:
+      awx.awx.tower_inventory:
         name: "Demo Inventory"
+        organization: "Default"
         state: absent
         tower_username: admin
         tower_password: ansible123!
