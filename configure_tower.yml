@@ -3,6 +3,7 @@
   connection: local
   gather_facts: false
   
+  
 
 
   tasks:
@@ -29,7 +30,7 @@
     - name: remove demo credential
       awx.awx.tower_credential:
         name: "Demo Credential"
-        type: ssh
+        credential_type: Machine
         state: absent
         tower_username: admin
         tower_password: ansible123!
@@ -113,7 +114,7 @@
 
     - name: Create vm remediation Job
       awx.awx.tower_job_template:
-        name: "Make sure sudoers is correct"
+        name: "verify sudoers"
         job_type: "run"
         organization: "Default"
         inventory: "rhel_vms"
