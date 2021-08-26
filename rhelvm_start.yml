@@ -39,7 +39,7 @@
     - name: copy user-seed.conf
       copy:
         src: files/user-seed.conf
-        dest: /opt/splunkforwarder/etc/system/local/
+        dest: /opt/splunkforwarder/etc/system/local/user-seed.conf
       
     - name: configure splunk forwarder - accept license and set user/password
       command: /opt/splunkforwarder/bin/splunk restart --accept-license --answer-yes --no-prompt
@@ -51,7 +51,7 @@
       command: /opt/splunkforwarder/bin/splunk add monitor /var/log/messages
 
     - name: configure splunk forwarder - monitor audit.log
-      command: opt/splunkforwarder/bin/splunk add monitor /var/log/audit/audit.log
+      command: /opt/splunkforwarder/bin/splunk add monitor /var/log/audit/audit.log
 
     - name: enable audit of /etc/sudoers
       command: auditctl -w /etc/sudoers -p wa -k sudoers
@@ -59,7 +59,7 @@
     - name: import configure controller playook
       import_tasks: configure_controller.yml
 
-- name: configure splunk container for demp
+- name: configure splunk container for demo
   hosts: splunk
   gather_facts: false
   become: yes
