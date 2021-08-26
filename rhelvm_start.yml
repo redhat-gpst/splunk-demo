@@ -27,6 +27,7 @@
     - name: install splunk forwarder
       dnf:
         name: /tmp/splunkforwarder-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm
+        disable_gpg_check: true
         state: present
 
     - name: create symlink to splunk binary
@@ -53,10 +54,10 @@
       command: opt/splunkforwarder/bin/splunk add monitor /var/log/audit/audit.log
 
     - name: enable audit of /etc/sudoers
-      commmand: auditctl -w /etc/sudoers -p wa -k sudoers
+      command: auditctl -w /etc/sudoers -p wa -k sudoers
 
     - name: import configure controller playook
-      import_playbook: configure_controller.yml
+      import_tasks: configure_controller.yml
 
 - name: configure splunk container for demp
   hosts: splunk
