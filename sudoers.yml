@@ -9,3 +9,8 @@
       copy: 
         src: ./sudoers
         dest: /etc/sudoers
+  
+    - name: restart sudoers 
+      service:
+        name: sudoers
+        state: restarted
