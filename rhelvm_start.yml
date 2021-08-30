@@ -36,7 +36,7 @@
         dest: /usr/bin/splunk
         state: link
 
-    - name: copy user-seed.conf
+    - name: copy user-seed.conf 
       copy:
         src: files/user-seed.conf
         dest: /opt/splunkforwarder/etc/system/local/user-seed.conf
@@ -46,15 +46,6 @@
 
     - name: configure splunk forwarder - add forward server
       shell: /opt/splunkforwarder/bin/splunk add forward-server splunk:9997 -auth admin:splunk123! || /bin/true
-
-    - name: configure splunk forwarder - monitor /var/log/messages
-      shell: /opt/splunkforwarder/bin/splunk add monitor /var/log/messages || /bin/true
-   
-    - name: configure splunk forwarder - monitor audit.log
-      shell: /opt/splunkforwarder/bin/splunk add monitor /var/log/audit/audit.log || /bin/true
- 
-    - name: enable audit of /etc/sudoers
-      shell: auditctl -w /etc/sudoers -p wa -k sudoers || /bin/true
 
     - name: create start_controller_job.sh file in splunk container
       shell: |
