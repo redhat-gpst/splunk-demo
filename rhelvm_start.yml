@@ -59,8 +59,13 @@
     - name: create start_controller_job.sh file in splunk container
       shell: |
          ssh -o StrictHostKeyChecking=no splunk 'cat <<EOF >> /opt/splunk/bin/scripts/start_controller_job.sh
-         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible123! https://tower/api/v2/job_templates/25/launch/
+         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible123! https://tower/api/v2/job_templates/9/launch/
          EOF'
+    
+    - name: make start_controller_job.sh file executeable
+      shell: |
+         ssh -o StrictHostKeyChecking=no splunk 'chmod +x /opt/splunk/bin/scripts/start_controller_job.sh'
+    
          
     - name: import configure controller playook
       import_tasks: configure_controller.yml
