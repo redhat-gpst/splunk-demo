@@ -7,6 +7,6 @@
   
     - name: copy original sudoers to rhel vms
       copy: 
-        src: ./sudoers
+        src: ./files/sudoers
         dest: /etc/sudoers
   
