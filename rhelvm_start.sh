@@ -1,6 +1,8 @@
 #!/bin/bash
 cd /tmp
 
+## this script is for reference and has been converted to an ansible playbook
+
 ## audit access to /etc/sudoers
 sudo auditctl -w /etc/sudoers -p wa -k sudoers
 
