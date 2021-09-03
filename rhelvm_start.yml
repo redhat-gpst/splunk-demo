@@ -19,14 +19,14 @@
           - wget
         state: present
 
-    - name: download splunk forwarder rpm
-      get_url:
-        url: https://d7wz6hmoaavd0.cloudfront.net/products/universalforwarder/releases/8.2.1/linux/splunkforwarder-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm
-        dest: /tmp/splunkforwarder-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm
+   # - name: download splunk forwarder rpm
+   #   get_url:
+   #     url: https://d7wz6hmoaavd0.cloudfront.net/products/universalforwarder/releases/8.2.1/linux/splunkforwarder-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm
+   #     dest: /tmp/splunkforwarder-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm
 
     - name: install splunk forwarder
       dnf:
-        name: /tmp/splunkforwarder-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm
+        name: https://d7wz6hmoaavd0.cloudfront.net/products/universalforwarder/releases/8.2.1/linux/splunkforwarder-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm
         disable_gpg_check: true
         state: present
 
