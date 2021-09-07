@@ -9,7 +9,8 @@
       shell: lsof -t /etc/sudoers || echo z
       register: file_open
       until: file_open.stdout == "z"
-      delay: 10
+      delay: 6
+      retries: 20
       
     - name: copy original sudoers to rhel vms
       copy: 
