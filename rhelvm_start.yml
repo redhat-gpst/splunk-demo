@@ -17,6 +17,7 @@
           - nmap
           - vim
           - wget
+          - lsof
         state: present
 
    # - name: download splunk forwarder rpm
