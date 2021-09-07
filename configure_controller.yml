@@ -95,7 +95,7 @@
     description: "Splunk demo files"
     organization: "Default"
     scm_type: git
-    scm_url: https://github.com/gejames/splunk-demo
+    scm_url: https://github.com/redhat-gpst/splunk-demo.git
     state: present
     tower_username: admin
     tower_password: ansible123!
