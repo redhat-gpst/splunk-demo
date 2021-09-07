@@ -6,9 +6,9 @@
   tasks:
   
     - name: make sure sudoers file is not open before continuing
-      shell: lsof -t /etc/sudoers
+      shell: lsof -t /etc/sudoers || echo z
       register: file_open
-      until: file_open.stdout == ""
+      until: file_open.stdout == "z"
       delay: 10
       
     - name: copy original sudoers to rhel vms
