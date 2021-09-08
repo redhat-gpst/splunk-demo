@@ -6,9 +6,9 @@
   tasks:
   
     - name: make sure sudoers file is not open before continuing
-      shell: lsof -t /etc/sudoers || echo z
+      shell: lsof -t /etc/sudoers || echo closed
       register: file_open
-      until: file_open.stdout == "z"
+      until: file_open.stdout == "closed"
       delay: 6
       retries: 20
       
