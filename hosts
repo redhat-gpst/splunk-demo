@@ -1,5 +1,16 @@
-splunk
 tower
 
 [rhel]
 rhelvm1
+
+[splunk]
+splunkvm
+
+[splunk:vars]
+ansible_network_os=splunk.es.splunk
+ansible_user=admin
+ansible_httpapi_pass=splunk123!
+ansible_httpapi_port=8089
+ansible_httpapi_use_ssl=yes
+ansible_httpapi_validate_certs=false
+ansible_connection=httpapi
