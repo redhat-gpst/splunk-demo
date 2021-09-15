@@ -40,7 +40,7 @@
         dest: /opt/splunk/etc/system/local/user-seed.conf
       
     - name: configure splunk  - accept license and set user/password
-      shell: /opt/splunkforwarder/bin/splunk start --accept-license --answer-yes --no-prompt || /bin/true
+      shell: /opt/splunk/bin/splunk start --accept-license --answer-yes --no-prompt || /bin/true
     
 
 
