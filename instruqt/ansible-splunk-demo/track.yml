@@ -1,0 +1,336 @@
+slug: ansible-splunk-demo
+id: djaiq8hujej7
+type: track
+title: Ansible Splunk Demo
+teaser: Learn how making a change to a RHEL system file can start a remediation job in Ansible
+description: |2+
+   One of the junior admins at your company has been making changes to the `/etc/sudoers` file on critical systems outside of the approved change process.  You have been tasked with creating an automated way to restore the file to an approved version if it is changed without authorization. You decide to use Splunk Enterprise and Ansible Automation Platform to automate the file restore.  You setup a small lab to test the solution.
+
+  You create a diagram that explains the workflow to your manager.
+
+  ![workflow](https://github.com/gejames/splunk-demo/blob/master/images/splunk%20demo%20workflow.png?raw=true)
+
+  ---
+  The lab consists of:
+
+      1. Ansible automation controller
+      2. Splunk Enterprise
+      3. RHEL8 VM
+
+
+
+
+
+
+
+
+
+  ---
+  Once started, the lab takes about 5 minutes to load
+
+icon: ""
+level: beginner
+tags:
+- ansible
+- splunk
+owner: redhat
+developers:
+- gejames@redhat.com
+private: true
+published: false
+show_timer: true
+challenges:
+- slug: sudoers
+  id: iglrqizeu1bl
+  type: challenge
+  title: Enable monitoring of sudeors
+  teaser: (5 minutes) Learn how to monitor a file with auditd and splunk forwarder
+  assignment: |2
+
+    Click on the rhel tab
+
+    You decide to use `auditd` to log any `(w)rites` to `/etc/sudoers` and label the entries in the log with `monitor-sudoers`.
+
+    Because of the way `auditd` monitors a file for writes, it doesn't matter if the file is actually changed or not.
+
+    However, if the file is read, with something like `cat` or `less`, it will not be logged unless the `-p r` attribute is added.
+
+    ___
+    > Use the Copy button to copy the text into your clipboard.  Use Shift-Insert to paste the text into the CLI
+    ___
+
+    1. Copy the following command into the CLI. Anytime `/etc/sudoers` is opened for writes, an entry will be placed in `/var/log/audit/audit.log`.
+
+
+
+    ```
+    sudo auditctl -w /etc/sudoers -p w -k monitor-sudoers
+    ```
+
+    2. You've already installed the splunk forwarder on the RHEL VM and configured it to send logs to Splunk Enterprise.
+
+       Next, tell the splunk forwarder to monitor the audit log.
+
+    ```
+    sudo splunk add monitor /var/log/audit/audit.log
+    ```
+
+    Once complete, click Check to continue.
+  tabs:
+  - title: rhel
+    type: terminal
+    hostname: rhelvm1
+  - title: controller
+    type: service
+    hostname: tower
+    port: 443
+  - title: splunk
+    type: service
+    hostname: splunk
+    port: 8000
+    new_window: true
+  difficulty: basic
+  timelimit: 300
+- slug: login-splunk
+  id: ixncd3ifp7dy
+  type: challenge
+  title: Add an alert to Splunk Enterprise
+  teaser: (10 minutes) Learn how to add an alert to Splunk
+  assignment: |-
+    Now that you are logging when `/etc/sudoers` is opened for writes and sending that data to Splunk Enterprise, you add an alert that monitors the `/var/log/audit/audit.log` file.
+
+    For testing purposes, you decide to only trigger the alert if `/etc/sudoers` is opened with `visudo`.
+    ___
+
+    1. Login to Splunk
+
+       Press on the splunk tab to open the UI to Splunk.
+
+
+    ___
+       > This opens a new tab in your browser. Close any popups that may appear after logging in.
+    ___
+
+        username: admin
+        password: splunk123!
+
+    2. Once logged in, click on `Search and Reporting` on the left side of the UI
+
+    3. In the top right of the Splunk UI click on `Settings/Searches, reports, and alerts`
+
+    4. Click on `New Alert` and add the following to the alert
+
+       a. Title
+       ```
+       sudoers
+       ```
+       b. Search - Add the following to the search field.
+       ```
+       index=main source=/var/log/audit/audit.log visudo
+       ```
+
+       c. Change alert type to `Real-time`
+
+       d. Trigger alert when
+       ```
+       Number of results is greater than 1 in 1 minutes(s)
+       ```
+
+       e. Make sure `Throttle` is checked or you will get multiple alerts
+
+       f. Click on `Add Action/Run a script`
+
+       >   This script calls a curl command that starts the `verify_sudoers` job in Ansible controller
+
+       Filename:
+       ```
+       start_controller_job.sh
+       ```
+       g. Clieck on `Add Action/Add to Triggered Alerts`
+
+       h. Click on Save
+
+    5. To check your work, copy the following command to the RHEL CLI
+
+    ```
+    ssh splunk 'cat /opt/splunk/etc/users/admin/search/local/savedsearches.conf'
+    ```
+
+    You should see the following.  If it does not match, go back to Splunk and verify your settings.
+
+    ```
+    [sudoers]
+    action.script = 1
+    action.script.filename = start_controller_job.sh
+    alert.digest_mode = 0
+    alert.suppress = 1
+    alert.suppress.fields = host
+    alert.suppress.period = 60s
+    alert.track = 1
+    counttype = number of events
+    cron_schedule = * * * * *
+    dispatch.earliest_time = rt-1m
+    dispatch.latest_time = rt-0m
+    enableSched = 1
+    quantity = 1
+    relation = greater than
+    search = index=main source=/var/log/audit/audit.log visudo
+    ```
+
+    6. Once you are done, move on to the next challenge.
+  tabs:
+  - title: rhel
+    type: terminal
+    hostname: rhelvm1
+  - title: controller
+    type: service
+    hostname: tower
+    port: 443
+  - title: splunk
+    type: service
+    hostname: splunk
+    port: 8000
+    new_window: true
+  difficulty: basic
+  timelimit: 600
+- slug: login-controller
+  id: cbfshhcyudzz
+  type: challenge
+  title: Review Ansible automation controller
+  teaser: (5 minutes) Review the Ansible automation controller UI
+  assignment: |-
+    One of your colleagues has already configured Ansible automation controller for you.  You decide to login to review the UI and make sure it is configured correctly.
+
+    Click on the controller tab to login to Ansible automation controller
+
+    - username: `admin`
+    - password: `ansible123!`
+
+    Once logged in, click on Templates.  A Job Template to revert the sudoers file to its original sate has already been added. You should see a `verify sudoers` Job Template.
+
+    The job will run the following playbook to restore the sudoers file.
+
+    ```yaml
+    - name: restore original sudoers file
+      hosts: rhel
+      gather_facts: false
+      become: yes
+
+      tasks:
+
+        - name: copy original sudoers to rhel vms
+          copy:
+            src: ./sudoers
+            dest: /etc/sudoers
+
+    ```
+
+    Next, go to Projects.  You should see a project called `splunk demo`
+
+    Finally, take a look at Inventories.  You should see an inventory called `rhel_vms`
+
+    Once finished, move to the next challenge.
+  tabs:
+  - title: rhel
+    type: terminal
+    hostname: rhelvm1
+  - title: controller
+    type: service
+    hostname: tower
+    port: 443
+  - title: splunk
+    type: service
+    hostname: splunk
+    port: 8000
+    new_window: true
+  difficulty: basic
+  timelimit: 300
+- slug: trigger
+  id: a94kfb9yglam
+  type: challenge
+  title: Trigger the alert
+  teaser: (5 minutes) Editing sudoers with visudo
+  assignment: |2
+
+    Now that everything is in place, you are ready to test.
+
+    Make sure you are on the rhel tab.
+
+    Type `visudo` to open the sudoers file.
+
+    Press `insert` on your keyboard and add a comment to the top line
+
+    ```
+    # I made a change to sudoers
+    ```
+    Press `esc` then `:wq <enter>` on your keyboard to save the changes
+
+    Once complete, move onto the next challenge.
+  tabs:
+  - title: rhel
+    type: terminal
+    hostname: rhelvm1
+  - title: controller
+    type: service
+    hostname: tower
+    port: 443
+  - title: splunk
+    type: service
+    hostname: splunk
+    port: 8000
+    new_window: true
+  difficulty: basic
+  timelimit: 300
+- slug: verification
+  id: ne3sg7emfysj
+  type: challenge
+  title: Verify the changes
+  teaser: (10 minutes) In the final challenge, we'll take a look at verifying that the file was restored and have a look at Splunk alerts
+  assignment: |-
+    Finally,  you need to verify the solution works.
+
+    1. Navigate back to the controller tab and go to Jobs.  You should see a new job has successfully run to revert sudoers to its original state.
+
+    2. Go back to the rhel tab.
+
+    3. Take a look at `/etc/sudoers` to verify it was reverted to its original state.
+
+       a.
+       ```
+       sudo less /etc/sudoers
+       ```
+
+       b. Press `q` to quit.
+
+    4. Finally, take a look at the alerts in Splunk.
+
+       a. In the Splunk UI, go to `Activity/Triggered Alerts`
+
+       b. Click on `View Results`
+
+
+    Congratulations!  You have completed the lab. Move onto the next challenge for a sandbox where you can continue to test and learn.
+  tabs:
+  - title: rhel
+    type: terminal
+    hostname: rhelvm1
+  - title: controller
+    type: service
+    hostname: tower
+    port: 443
+  - title: splunk
+    type: service
+    hostname: splunk
+    port: 8000
+    new_window: true
+  difficulty: basic
+  timelimit: 600
+- slug: sandbox
+  id: xdu4vhc0ijcu
+  type: challenge
+  title: Sandbox
+  teaser: (25 minutes) You can now use the lab as a sandbox to learn more about Ansible Automation Platform and Splunk Enterprise
+  assignment: Congratulations on finishing the lab.  You can now use the lab as a sandbox to learn more about Ansible Automation Platform and Splunk Enterprise
+  difficulty: basic
+  timelimit: 5100
+checksum: "1320433883860718241"

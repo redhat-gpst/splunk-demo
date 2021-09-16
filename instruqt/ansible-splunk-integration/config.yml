@@ -1,0 +1,24 @@
+version: "2"
+containers:
+- name: splunk
+  image: splunk/splunk
+  shell: /bin/bash
+  ports:
+  - 8000
+  - 9997
+  environment:
+    SPLUNK_PASSWORD: splunk123!
+    SPLUNK_START_ARGS: --accept-license
+  memory: 2048
+virtualmachines:
+- name: rhelvm1
+  image: instruqt-redhat/ansible
+  shell: /bin/bash
+  machine_type: n1-standard-1
+- name: tower
+  image: red-hat-mbu/automation-controller
+  machine_type: n1-standard-2
+- name: splunkvm
+  image: instruqt-redhat/ansible
+  shell: /bin/bash
+  machine_type: n1-standard-1

@@ -1,0 +1,2 @@
+#!/bin/bash
+ssh -q splunk [[ -f /opt/splunk/etc/users/admin/search/local/savedsearches.conf ]] && echo "Alert is configured" || echo "Alert is not configured.";
